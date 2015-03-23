@@ -1,0 +1,15 @@
+---
+- name: ensure apt cache is up to date
+  apt: update_cache=yes
+
+- name: ensure python-software-properties is installed
+  apt: name=python-software-properties state=present
+
+- name: add Couchdb repository
+  apt_repository: repo={{ couchdb_ppa }} state=present
+
+- name: ensure apt cache is up to date
+  apt: update_cache=yes
+
+- name: ensure couchdb is installed
+  apt: name=couchdb state=present
