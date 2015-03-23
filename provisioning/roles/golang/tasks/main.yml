@@ -1,4 +1,8 @@
 ---
+
+- debug: msg="Username {{ ansible_ssh_user }}"
+
+
 - name: Download the Go tarball
   get_url: url={{ go_download_location }}
            dest=/usr/local/src/{{ go_tarball }}
@@ -13,11 +17,7 @@
   command: tar -C /usr/local -xf /usr/local/src/{{ go_tarball }}
   when: go_version|failed or go_version.stdout != go_version_target
 
-- name: Add the Go bin directory to the PATH environment variable for all users
-  copy: src=gobin.sh
-        dest=/etc/profile.d
-
-- name: Set GOPATH for all users
+- name: Set enviromental variables
   copy: src=gopath.sh
         dest=/etc/profile.d
 - name: ensure apt cache is up to date
@@ -29,3 +29,26 @@
       - git
       - bzr
       - mercurial
+
+- name: create GOPATH
+  sudo: no
+  file: path=/home/{{ ansible_ssh_user }}/go state=directory
+
+- name: Setup test suite
+  sudo: no
+  command: /usr/local/go/bin/go get {{ ginkgo }}
+  environment:
+    GOPATH: /home/{{ ansible_ssh_user }}/go
+
+- name: setup gomega
+  sudo: no
+  command: /usr/local/go/bin/go get {{ gomega }}
+  environment:
+    GOPATH: /home/{{ ansible_ssh_user }}/go
+
+
+- name: Setup package manager
+  sudo: no
+  command:  /usr/local/go/bin/go get {{ godep }}
+  environment:
+    GOPATH: /home/{{ ansible_ssh_user }}/go
