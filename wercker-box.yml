@@ -19,14 +19,6 @@ packages:
         - godep
 
 script: |
-        #Set GOPATH
-        export GOPATH=$HOME/go
-        echo "export GOPATH=$HOME/go" | sudo tee -a /etc/profile
-
-        # Add GOBIN to Path
-        export PATH="$PATH:$GOPATH/bin"
-        echo 'export PATH="$PATH:$GOPATH/bin"' | sudo tee -a /etc/profile
-
         # Setup dev enviroment
         sudo apt-get update
         sudo apt-get install python-software-properties
@@ -34,7 +26,7 @@ script: |
         sudo add-apt-repository ppa:ansible/ansible -y
         sudo apt-get update
         sudo apt-get install ansible
-        sudo ansible-playbook -v provisioning/playbook.yml -i provisioning/inventory.ini -c local
+        ansible-playbook -v provisioning/playbook.yml -i provisioning/inventory.ini -c local
 
 
 
