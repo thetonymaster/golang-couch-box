@@ -1,5 +1,5 @@
 name: golang-couch-db
-version: 0.0.1
+version: 0.0.2
 inherits: wercker/ubuntu12.04-webessentials@1.0.4
 type: main
 platform: ubuntu@12.04
@@ -19,6 +19,15 @@ packages:
         - godep
 
 script: |
+        #Set GOPATH
+        export GOPATH=$HOME/go
+        echo "export GOPATH=$HOME/go" | sudo tee -a /etc/profile
+        sudo ansible-playbook -v provisioning/playbook.yml -i provisioning/inventory.ini -c local
+
+        # Add GOBIN to Path
+        export PATH="$PATH:$GOPATH/bin"
+        echo 'export PATH="$PATH:$GOPATH/bin"' | sudo tee -a /etc/profile
+
         # Setup dev enviroment
         sudo apt-get update
         sudo apt-get install python-software-properties
@@ -27,6 +36,8 @@ script: |
         sudo apt-get update
         sudo apt-get install ansible
         sudo ansible-playbook -v provisioning/playbook.yml -i provisioning/inventory.ini -c local
+
+
 
 box-detect:
   priority : 900
