@@ -1,0 +1,29 @@
+name: golang-couch-db
+version: 0.0.1
+inherits: wercker/ubuntu12.04-webessentials@1.0.4
+type: main
+platform: ubuntu@12.04
+description: A box for development with CouchDB and Go 1.4
+keywords:
+        - golang
+        - go
+        - couchdb
+packages:
+        - golang@1.4
+        - git
+        - mercurial
+        - bzr
+        - couchdb
+        - ginkgo
+        - gomega
+        - godep
+
+script: |
+        # Setup dev enviroment
+        sudo apt-get update
+        sudo apt-get install python-software-properties
+        sudo apt-get install software-properties-common
+        sudo add-apt-repository ppa:ansible/ansible -y
+        sudo apt-get update
+        sudo apt-get install ansible
+        sudo ansible-playbook -v provisioning/playbook.yml -i provisioning/inventory.ini -c local
